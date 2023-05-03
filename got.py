@@ -1,3 +1,10 @@
+#Integrantes: 
+#Javiera Cabezas
+#Annais Caro
+#Natalia Carrillanca
+#Franco Comas
+#Felipe Delgado
+
 import sys
 import pandas as pd
 from PyQt6.QtWidgets import QApplication, QLabel, QLineEdit, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QComboBox, QTableWidget, QTableWidgetItem
@@ -68,8 +75,7 @@ class SearchWindow(QWidget):
     # Borrar los resultados de las búsquedas anteriores
         self.result_table.setRowCount(0)
 
-        name = self.name_input.text()
-        #.lower()
+        name = self.name_input.text().lower()
         loyalty = self.loyalty_combo.currentText()
         year = self.year_input.text()
         book = self.book_input.text()
