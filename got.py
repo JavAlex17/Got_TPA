@@ -65,7 +65,11 @@ class SearchWindow(QWidget):
         self.setLayout(main_layout)
 
     def search(self):
-        name = self.name_input.text().lower()
+    # Borrar los resultados de las búsquedas anteriores
+        self.result_table.setRowCount(0)
+
+        name = self.name_input.text()
+        #.lower()
         loyalty = self.loyalty_combo.currentText()
         year = self.year_input.text()
         book = self.book_input.text()
@@ -73,7 +77,7 @@ class SearchWindow(QWidget):
         gender = self.gender_combo.currentText()
         nobility = self.nobility_combo.currentText()
 
-        # Filtrar la base de datos
+    # Filtrar la base de datos
         query_str = f"Name.str.lower().str.contains('{name}')"
         if loyalty != "Todos":
             query_str += f" and Allegiances == '{loyalty}'"
@@ -88,12 +92,18 @@ class SearchWindow(QWidget):
         if nobility != "Todos":
             if nobility == "Noble":
                 query_str += " and Nobility == 1"
-            elif nobility == "Común":
-                query_str += " and Nobility == 0"
+        elif nobility == "Común":
+            query_str += " and Nobility == 0"
 
         filtered_df = self.df.query(query_str)
 
-        # Mostrar los resultados en la tabla
+    # Eliminar filas con valores nulos o en blanco
+        filtered_df = filtered_df.dropna()
+
+    # Reindexar filas
+        filtered_df = filtered_df.reset_index(drop=True)
+
+    # Mostrar los resultados en la tabla
         self.result_table.setRowCount(len(filtered_df))
         for i, row in filtered_df.iterrows():
             name_item = QTableWidgetItem(row["Name"])
@@ -109,6 +119,10 @@ class SearchWindow(QWidget):
             self.result_table.setItem(i, 3, book_item)
             self.result_table.setItem(i, 4, chapter_item)
             self.result_table.setItem(i, 5, nobility_item)
+
+
+    # Ajustar la altura de las filas de la tabla
+            self.result_table.resizeRowsToContents()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
