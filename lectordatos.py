@@ -2,25 +2,30 @@ import pandas as pd
 import sys
 
 from PyQt6.QtCore import QSize, Qt
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget , QTableWidget, QTableWidgetItem
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QTableWidget, QTableWidgetItem, QVBoxLayout, QHBoxLayout, QPushButton
 
 
-datos=list(pd.read_csv('character_deaths.csv',header=0))
-print(datos[0:13])
+datos=pd.read_csv('character_deaths.csv')
+
 
 class VentanaPersonajes(QMainWindow):
     def __init__(self, archivo):
         super().__init__()
+        self.resize(1350,300)
         
-        self.tablePersonajes = QTableWidget(10,13)
+        self.tablePersonajes = QTableWidget(archivo.shape[0], archivo.shape[1])
+        self.tablePersonajes.setHorizontalHeaderLabels(archivo.columns)
         
-        self.tablePersonajes.setHorizontalHeaderLabels(['Name','Allegiances','Death Year','Book of Death','Death Chapter','Book Intro Chapter','Gender','Nobility','GoT','CoK','SoS','FfC','DwD'])
-        
-        
-        #self.table_widget = QTableWidget(self)
-            
         self.setWindowTitle("Muertes de Personajes")
         self.setCentralWidget(self.tablePersonajes)
+        
+        for i in range(archivo.shape[0]):
+            for j in range(archivo.shape[1]):
+                item = QTableWidgetItem(str(archivo.iloc[i,j]))
+                self.tablePersonajes.setItem(i, j, item)
+
+
+        
         
 app = QApplication(sys.argv)
 ventana = VentanaPersonajes(datos)
